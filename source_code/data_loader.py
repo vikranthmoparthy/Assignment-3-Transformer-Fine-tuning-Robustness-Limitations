@@ -1,3 +1,14 @@
+""""
+This script loads the AG News dataset directly from a Hugging Face repository
+and converts the JSONL data into pandas DataFrames for preprocessing. We also create a unified text feature by combining headlines with descriptions.
+Part of this code was re-used from previous assignments.
+Sources:
+    HuggingFace dataset loading: https://shorturl.at/nLkoe
+    HuggingFace dataset pandas conversion: https://shorturl.at/7oBMa
+    Stratified Splitting: https://shorturl.at/7FIUj
+
+"""
+
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
@@ -9,7 +20,10 @@ def load_and_split_data(seed=7):
 
     df_train_full = dataset['train'].to_pandas()
     df_test = dataset['test'].to_pandas()
+    
 
+    #Here, we implement new functionality. We combine title and description into a single text column. 
+    #This also ensures the model receives the maximum amount of context for classification.
     if 'text' not in df_train_full.columns:
         if 'title' in df_train_full.columns and 'description' in df_train_full.columns:
             df_train_full['text'] = df_train_full['title'] + " - " + df_train_full['description']

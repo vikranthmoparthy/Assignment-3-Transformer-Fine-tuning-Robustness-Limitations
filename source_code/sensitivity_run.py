@@ -1,3 +1,13 @@
+"""
+In this file, we iteratively fine-tune a new DistilBERT model on three different sizes of training data (25%, 50%, and 100%)
+We generate a clear trendline of Accuracy and Macro-F1 scores. Again most of the functionality was taken from the jupyter notebook: 
+transformer_finetuning.ipynb. Additionally, the evaluate_model function was taken from another script. We also referred to some 
+additional documentation. We only consider 10000 data points, rather than the 108000, since we can save computing power and 
+illustrate the same general trend.
+Sources:
+Fractional Data Subsetting: https://shorturl.at/VdWeH
+"""
+
 import torch
 import pandas as pd
 import numpy as np
@@ -29,6 +39,8 @@ def evaluate_model(model, tokenizer, texts, device):
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     df_train_full, df_dev, df_test = load_and_split_data(seed=7)
+
+    df_train_full = df_train_full.sample(n=10000, random_state=7)
     
     hf_dev = Dataset.from_pandas(df_dev)
     test_texts = df_test['text'].tolist()
@@ -42,14 +54,17 @@ def main():
         
     tokenized_dev = hf_dev.map(tokenize_function, batched=True)
     
+    # We define the fractions of the training set to test (25%, 50%, 100%)
     fractions = [0.25, 0.50, 1.0]
     results = []
     
+    #We loop through each fraction to run a complete, isolated training cycle
     for frac in fractions:
         df_train_sub = df_train_full.sample(frac=frac, random_state=7)
         hf_train = Dataset.from_pandas(df_train_sub)
         tokenized_train = hf_train.map(tokenize_function, batched=True)
         
+        #We initialize the model inside the loop, which ensures we start with a "blank" pre-trained model every time,
         model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=4).to(device)
         
         training_args = TrainingArguments( 
@@ -58,11 +73,12 @@ def main():
             save_strategy="epoch",             
             logging_strategy="epoch",
             learning_rate=2e-5,
-            per_device_train_batch_size=8,
-            per_device_eval_batch_size=8,
-            num_train_epochs=5,
+            per_device_train_batch_size=64,
+            per_device_eval_batch_size=64,
+            num_train_epochs=2,
             weight_decay=0.01,
-            load_best_model_at_end=True,       
+            load_best_model_at_end=True,      
+            fp16=True,
             metric_for_best_model="eval_loss"
         )
         

@@ -1,32 +1,27 @@
-"""
-This file loads the AG news dataset from Huggingface, converts it to pandas DataFrame and splits the data.
-In writing this code, we looked up some documentation, which is listed below:
-Sources:
-    HuggingFace dataset loading: https://shorturl.at/nLkoe
-    HuggingFace dataset pandas conversion: https://shorturl.at/7oBMa
-    Stratified Splitting: https://shorturl.at/7FIUj
-Note: We reused this exact same code from Assignment 1 & 2
-"""
-
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
 def load_and_split_data(seed=7):
-    url = "hf://datasets/sh0416/ag_news/" #File path for the ag news dataset.
-
+    url = "hf://datasets/sh0416/ag_news/" 
     data_files = {"train": f"{url}train.jsonl","test": f"{url}test.jsonl"} 
-
-    #Here we use Huggingface library to load jsonl files
+    
     dataset = load_dataset("json", data_files=data_files)
 
-    #We convert the dataset to pandas dataframe, which we know how to work with.
     df_train_full = dataset['train'].to_pandas()
     df_test = dataset['test'].to_pandas()
 
-    df_train, df_dev = train_test_split( #We use a a 90/10 validation split
+    if 'text' not in df_train_full.columns:
+        if 'title' in df_train_full.columns and 'description' in df_train_full.columns:
+            df_train_full['text'] = df_train_full['title'] + " - " + df_train_full['description']
+            df_test['text'] = df_test['title'] + " - " + df_test['description']
+        elif 'Title' in df_train_full.columns and 'Description' in df_train_full.columns:
+            df_train_full['text'] = df_train_full['Title'] + " - " + df_train_full['Description']
+            df_test['text'] = df_test['Title'] + " - " + df_test['Description']
+
+    df_train, df_dev = train_test_split( 
         df_train_full,
         test_size=0.1,
         random_state=seed,
-        stratify=df_train_full['label']  #Ensures that the proportion of each class in label is preserved in the split.
+        stratify=df_train_full['label']  
     )
     return df_train, df_dev, df_test

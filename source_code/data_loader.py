@@ -5,6 +5,7 @@ Sources:
     HuggingFace dataset loading: https://shorturl.at/nLkoe
     HuggingFace dataset pandas conversion: https://shorturl.at/7oBMa
     Stratified Splitting: https://shorturl.at/7FIUj
+Note: We reused this exact same code from Assignment 1 & 2
 """
 
 from datasets import load_dataset

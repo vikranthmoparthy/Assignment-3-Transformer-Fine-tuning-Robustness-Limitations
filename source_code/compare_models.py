@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, ConfusionMatrixDisplay
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from source_code.data_loader import load_and_split_data
+from data_loader import load_and_split_data
 
 # This function manually evaluates the data, tailored to the AG news dataset
 def evaluate_transformer(model_path, texts, device):
@@ -62,19 +62,24 @@ def main():
     y_true = df_test['label'].values
     class_names = ['World', 'Sports', 'Business', 'Sci/Tech']
     
+    #We updated path to load the model from Google Drive
+    model_path = "/content/drive/MyDrive/Colab Notebooks/best_transformer"
+    
     #Evaluate the new Transformer
-    trans_preds = evaluate_transformer("../models/best_transformer", texts, device)
+    trans_preds = evaluate_transformer(model_path, texts, device)
     
     results = []
     
     #Append Transformer metrics
     results.append({
-        "Model": "DistilBERTss",
+        "Model": "DistilBERT",
         "Accuracy": accuracy_score(y_true, trans_preds),
         "Macro-F1": f1_score(y_true, trans_preds, average='macro')
     })
     
-    generate_confusion_matrix(y_true, trans_preds, class_names, "../outputs/trans_cm.png")
+    #Path to save the image directly to Google Drive
+    output_image_path = "/content/drive/MyDrive/Colab Notebooks/trans_cm.png"
+    generate_confusion_matrix(y_true, trans_preds, class_names, output_image_path)
         
     #We hardcode the Assignment 2 CNN Baseline
     results.append({

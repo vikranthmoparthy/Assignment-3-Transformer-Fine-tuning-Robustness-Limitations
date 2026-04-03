@@ -6,10 +6,6 @@ EarlyStopping: https://shorturl.at/T2tB7
 Training Arguments: https://shorturl.at/x8HCW
 """
 
-from google.colab import drive
-drive.mount('/content/drive')
-
-
 import torch
 from datasets import Dataset
 from transformers import (

@@ -36,9 +36,9 @@ def main():
         save_strategy="epoch",             
         logging_strategy="epoch",
         learning_rate=2e-5,
-        per_device_train_batch_size=32,
-        per_device_eval_batch_size=32,
-        num_train_epochs=3,
+        per_device_train_batch_size=64,
+        per_device_eval_batch_size=64,
+        num_train_epochs=2,
         weight_decay=0.01,
         load_best_model_at_end=True,       
         metric_for_best_model="eval_loss"  

@@ -10,7 +10,7 @@ import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from data_loader import load_and_split_data
 
-def evaluate_transformer(model_path, texts, device):
+def evaluate_transformer(model_path, texts, device): #Same function reused from compare_models.py
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path).to(device)
     model.eval()
@@ -27,7 +27,7 @@ def evaluate_transformer(model_path, texts, device):
         predicted_labels = torch.argmax(logits, dim=1).cpu().numpy()
         all_preds.extend(predicted_labels)
         
-    return np.array(all_preds) # Return as numpy array for easy masking
+    return np.array(all_preds)
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -61,9 +61,6 @@ def main():
     
     output_csv_path = "/content/drive/MyDrive/Colab Notebooks/transformer_errors.csv"     #Save to Google Drive as a CSV
     df_errors.to_csv(output_csv_path, index=False)
-    
-    print(f"\nSuccessfully found {len(error_texts)} total errors.")
-    print(f"Exported the first 50 examples to: {output_csv_path}")
 
 if __name__ == "__main__":
     main()

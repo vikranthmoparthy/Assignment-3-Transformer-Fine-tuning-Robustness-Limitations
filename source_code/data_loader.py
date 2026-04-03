@@ -14,9 +14,10 @@ def load_and_split_data(seed=7):
         if 'title' in df_train_full.columns and 'description' in df_train_full.columns:
             df_train_full['text'] = df_train_full['title'] + " - " + df_train_full['description']
             df_test['text'] = df_test['title'] + " - " + df_test['description']
-        elif 'Title' in df_train_full.columns and 'Description' in df_train_full.columns:
-            df_train_full['text'] = df_train_full['Title'] + " - " + df_train_full['Description']
-            df_test['text'] = df_test['Title'] + " - " + df_test['Description']
+            
+    if df_train_full['label'].max() == 4:
+        df_train_full['label'] = df_train_full['label'] - 1
+        df_test['label'] = df_test['label'] - 1
 
     df_train, df_dev = train_test_split( 
         df_train_full,

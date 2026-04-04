@@ -54,17 +54,17 @@ def main():
         
     tokenized_dev = hf_dev.map(tokenize_function, batched=True)
     
-    # We define the fractions of the training set to test (25%, 50%, 100%)
+    #We define the fractions of the training set to test (25%, 50%, 100%)
     fractions = [0.25, 0.50, 1.0]
     results = []
     
-    #We loop through each fraction to run a complete, isolated training cycle
+    #We loop through each fraction to run a complete and isolated training cycle
     for frac in fractions:
         df_train_sub = df_train_full.sample(frac=frac, random_state=7)
         hf_train = Dataset.from_pandas(df_train_sub)
         tokenized_train = hf_train.map(tokenize_function, batched=True)
         
-        #We initialize the model inside the loop, which ensures we start with a "blank" pre-trained model every time,
+        #We initialize the model inside the loop, which ensures we start with a blank pre-trained model every time,
         model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=4).to(device)
         
         training_args = TrainingArguments( 

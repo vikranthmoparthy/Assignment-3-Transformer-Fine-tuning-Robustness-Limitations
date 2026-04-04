@@ -23,7 +23,7 @@ It has the following structure:
 
 Each file has separate functionality.
 
-    compare_models.py: Evaluates the fine-tuned model against Assignment 2's CNN and generates a confusion matrix.
+    compare_models.py: Evaluates the transformer model against Assignment 2's CNN and generates a confusion matrix.
 
     data_loader.py: Mainly for downloading the dataset from Hugging Face, doing some text preprocessing and stratified splitting
 
@@ -33,6 +33,6 @@ Each file has separate functionality.
 
     stress_test.py: Tests the model's performance on "Headline + Description" versus "Headline Only"
 
-Each of these files can be separately by navigating into the folder and running:
+Each of these files can be run separately by navigating into the folder and running:
 
     python "file_name".py

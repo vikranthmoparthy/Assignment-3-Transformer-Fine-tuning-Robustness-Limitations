@@ -3,6 +3,8 @@ It has the following structure:
 
 .
 ```text
+├── models/
+│   ├── .DS_Store
 ├── outputs/
 │   ├── trans_cm.png
 │   └── transformer_errors.csv

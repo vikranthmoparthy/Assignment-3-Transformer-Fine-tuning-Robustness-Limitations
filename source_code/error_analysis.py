@@ -41,12 +41,9 @@ def main():
     model_path = "/content/drive/MyDrive/Colab Notebooks/best_transformer"
     y_pred = evaluate_transformer(model_path, texts.tolist(), device)
     
-
-    errors_mask = y_true != y_pred #Find mismatches
-    
-    error_texts = texts[errors_mask]
-    error_true = y_true[errors_mask]
-    error_pred = y_pred[errors_mask]
+    error_texts = texts[y_true != y_pred] #Find mismatches
+    error_true = y_true[y_true != y_pred]
+    error_pred = y_pred[y_true != y_pred]
     
     error_results = []     #Compile into a readable DataFrame
 

@@ -19,7 +19,7 @@ from transformers import (
 from data_loader import load_and_split_data
 
 def main():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu" #We want to run on T4 GPU
 
     df_train, df_dev, df_test = load_and_split_data(seed=7) #Use of stratified splitting
 
@@ -28,7 +28,7 @@ def main():
     
     model_name = "distilbert-base-uncased"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    max_seq_length = 256 #Define max length to manage CPU memory and training speed
+    max_seq_length = 256 #We Define max length to manage GPU memory
 
     def tokenize_function(examples): #Essentially same as notebook, except with the max_length argument
         return tokenizer(examples["text"], padding="max_length", truncation=True, max_length=max_seq_length)
@@ -45,9 +45,9 @@ def main():
             save_strategy="epoch",             
             logging_strategy="epoch",
             learning_rate=2e-5,
-            per_device_train_batch_size=64,
+            per_device_train_batch_size=64, #Increased batch size speeds up training
             per_device_eval_batch_size=64,
-            num_train_epochs=2,
+            num_train_epochs=2, #We figured we don't really need many epochs (saves time & computing units on G Collab)
             weight_decay=0.01,
             fp16=True, #Speeds up the process
             load_best_model_at_end=True,       

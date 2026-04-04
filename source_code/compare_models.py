@@ -25,20 +25,20 @@ def evaluate_transformer(model_path, texts, device):
     all_preds = []
     batch_size = 16
     
-    #Manual batching logic
+    #We have a manual batching logic
     for i in range(0, len(texts), batch_size):
-        batch_texts = texts[i:i + batch_size] # Slice the list of texts to create the current batch
+        batch_texts = texts[i:i + batch_size] #Slice the list of texts to create the current batch
         
         #We apply padding/truncation during inference to match our training configurations
         inputs = tokenizer(batch_texts, padding="max_length", truncation=True, max_length=256, return_tensors="pt").to(device)
         
-        with torch.no_grad(): # Disable gradient tracking to save VRAM and speed up the test samples
+        with torch.no_grad(): # Disable gradient tracking to speed up the test samples
             outputs = model(**inputs)
             logits = outputs.logits
         
         #By specifying dim=1, we find the highest probability class for each individual sentence within the 16-item batch, rather than the highest probability in the entire matrix.
         predicted_labels = torch.argmax(logits, dim=1).cpu().numpy()
-        # Accumulate all predictions in a list to allow for Macro-F1 and confusion matrix calculation
+        #We accumulate all predictions in a list for Macro-F1 and confusion matrix calculation
         all_preds.extend(predicted_labels)
         
     return all_preds

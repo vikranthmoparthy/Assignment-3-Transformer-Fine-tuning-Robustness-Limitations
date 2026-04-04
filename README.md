@@ -1,6 +1,6 @@
 This repository contains the code for fine-tuning a DistilBERT transformer model on the AG News dataset. 
 It has the following structure:
-"""
+
 .
 ├── outputs/
 │   ├── trans_cm.png
@@ -16,7 +16,7 @@ It has the following structure:
 ├── .gitignore
 ├── README.md
 └── requirements.txt
-"""
+
 Each file has separate functionality.
     compare_models.py: Evaluates the fine-tuned model against Assignment 2's CNN and generates a confusion matrix.
     data_loader.py: Mainly for downloading the dataset from Hugging Face, doing some text preprocessing and stratified splitting

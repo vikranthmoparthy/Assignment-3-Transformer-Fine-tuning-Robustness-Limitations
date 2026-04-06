@@ -57,9 +57,13 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     #We ensure both models are judged on the exact same test split using seed=7
-    _, _, df_test = load_and_split_data(seed=7) 
+    _, df_dev, df_test = load_and_split_data(seed=7) 
     texts = df_test['text'].tolist()
     y_true = df_test['label'].values
+    
+    dev_texts = df_dev['text'].tolist()
+    dev_y_true = df_dev['label'].values
+    
     class_names = ['World', 'Sports', 'Business', 'Sci/Tech']
     
     #We updated path to load the model from Google Drive
@@ -67,14 +71,15 @@ def main():
     
     #Evaluate the new Transformer
     trans_preds = evaluate_transformer(model_path, texts, device)
+    trans_preds_dev = evaluate_transformer(model_path, dev_texts, device)
     
     results = []
     
     #Append Transformer metrics
-    results.append({
-        "Model": "DistilBERT",
-        "Accuracy": accuracy_score(y_true, trans_preds),
-        "Macro-F1": f1_score(y_true, trans_preds, average='macro')
+    results.append({"Model": "DistilBERT", "Dev Accuracy": accuracy_score(dev_y_true, trans_preds_dev),
+        "Dev Macro-F1": f1_score(dev_y_true, trans_preds_dev, average='macro'),
+        "Test Accuracy": accuracy_score(y_true, trans_preds),
+        "Test Macro-F1": f1_score(y_true, trans_preds, average='macro')
     })
     
     #Path to save the image directly to Google Drive
@@ -84,8 +89,10 @@ def main():
     #We hardcode the Assignment 2 CNN Baseline
     results.append({
         "Model": "CNN Baseline",
-        "Accuracy": 0.9193,
-        "Macro-F1": 0.9191
+        "Dev Accuracy": 0.9187,
+        "Dev Macro-F1": 0.9185,
+        "Test Accuracy": 0.9193,
+        "Test Macro-F1": 0.9191
     })
     
     # Output comparison table

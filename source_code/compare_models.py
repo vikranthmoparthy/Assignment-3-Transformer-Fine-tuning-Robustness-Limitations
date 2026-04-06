@@ -32,7 +32,7 @@ def evaluate_transformer(model_path, texts, device):
         #We apply padding/truncation during inference to match our training configurations
         inputs = tokenizer(batch_texts, padding="max_length", truncation=True, max_length=256, return_tensors="pt").to(device)
         
-        with torch.no_grad(): # Disable gradient tracking to speed up the test samples
+        with torch.no_grad(): #We disable gradient tracking to speed up the test samples
             outputs = model(**inputs)
             logits = outputs.logits
         

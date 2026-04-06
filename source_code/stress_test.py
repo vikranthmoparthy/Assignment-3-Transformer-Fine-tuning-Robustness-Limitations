@@ -43,7 +43,13 @@ def main():
         texts_full = (df_test['title'] + " - " + df_test['description']).tolist()
     else:
         texts_full = df_test['text'].tolist()
-        texts_head = [str(t).split(" - ", 1)[0] for t in texts_full]
+        texts_head = []
+
+        for t in texts_full: #Logic to extract headlines only
+            text_string = str(t)
+            split_pieces = text_string.split(" - ", 1)
+            headline_only = split_pieces[0]
+            texts_head.append(headline_only)
 
     model_path = "/content/drive/MyDrive/Colab Notebooks/best_transformer" 
     
